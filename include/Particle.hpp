@@ -4,8 +4,6 @@
 #include <iostream>
 #include <math.h>
 
-#define MAXVELOCITY 70.0
-
     //abstract parent for Light, Heavy
     class Particle{
     protected:

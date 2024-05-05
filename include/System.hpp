@@ -11,15 +11,7 @@
 #include <iostream>
 #include <vector>
 #include <pthread.h>
-
-#define SCREENSIZEX 1280
-#define SCREENSIZEY 720
-#define GROUNDWIDTH 1150
-#define GROUNDHEIGHT 720
-// frames per second depend on max speed in system to avoid overflight
-#define FPS MAXVELOCITY*2
-#define TICKTIME 1.0/FPS
-#define SCALE 20
+#include "Constants.hpp"
 
     class System{
         std::vector<Particle*> particles;

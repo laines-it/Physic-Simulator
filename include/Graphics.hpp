@@ -12,7 +12,6 @@
 #include <vector>
 #include "System.hpp"
 
-#define INITCOLOR 80
 /* Particles' images are toggle buttons. 
    User can select a one to, for example, delete it */
 class ParticleImage : public Fl_Toggle_Button{
