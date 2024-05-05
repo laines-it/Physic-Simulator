@@ -82,6 +82,9 @@ Main_Window::Main_Window(int seed, int lights, int heavys) : Fl_Window(SCREENSIZ
     addButton = new Fl_Button(GROUNDWIDTH, 0, SCREENSIZEX-GROUNDWIDTH, BUTTONHEIGHT, "Add Particle");
     addButton->callback(add_callback, (void*)this);
 
+    stepInput = new Fl_Int_Input(50, 10, 100, 30, "steps ");
+    stepInput->value("1");
+
     stepButton = new Fl_Button(GROUNDWIDTH, BUTTONHEIGHT + BUTTONMARGIN, SCREENSIZEX-GROUNDWIDTH, BUTTONHEIGHT, "Do Steps");
     stepButton->callback(step_callback, (void*)this);
 

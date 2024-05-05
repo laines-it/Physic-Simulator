@@ -6,6 +6,7 @@
 #include <FL/fl_draw.H>
 #include <FL/Fl_Window.H>
 #include <FL/Fl_Toggle_Button.H>
+#include <FL/Fl_Int_Input.H>
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Group.H>
 #include <unistd.h>
@@ -61,6 +62,7 @@ class Main_Window : public Fl_Window {
   Fl_Button *stepButton;
   Fl_Button *addButton;
   Fl_Button *removeButton;
+  Fl_Int_Input *stepInput;
 public:
   Main_Window(int seed, int lights, int heavys);
 
