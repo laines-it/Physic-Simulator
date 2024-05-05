@@ -57,7 +57,7 @@ class Main_Window : public Fl_Window {
   Fl_Button *addButton;
   Fl_Button *removeButton;
 public:
-  Main_Window();
+  Main_Window(int seed, int lights, int heavys);
 
   Ground* getGround(){ return ground; }
 

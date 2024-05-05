@@ -5,16 +5,16 @@
 
 class Heavy : public Particle{
     double radius;
-    double mass;
+    int mass;
 public:
-    Heavy(int seed);
+    Heavy(int& seed);
 
     Heavy(double x, double y, double vx, double vy);
 
     double get_radius() const {
         return radius;
     }
-    double get_mass() const {
+    int get_mass() const {
         return mass;
     }
 

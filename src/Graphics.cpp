@@ -13,7 +13,7 @@
 ParticleImage::ParticleImage(Particle* p, int id) : Fl_Toggle_Button(p->get_x()-p->get_radius(), p->get_y()-p->get_radius(), 2*p->get_radius(),  2*p->get_radius()){
     this->id = id;
     radius = p->get_radius();
-    color = INITCOLOR - p->get_mass();
+    color = INITCOLOR - p->get_mass()/10;
     std::cout << "created particle in " << x()+radius  << "," << y()+radius << " and rad " << radius << " and mass " << p->get_mass() << "\n";
     box(FL_OVAL_BOX);
     Fl_Toggle_Button::color(color);
@@ -22,7 +22,7 @@ ParticleImage::ParticleImage(Particle* p, int id) : Fl_Toggle_Button(p->get_x()-
 ParticleImage::ParticleImage(int x, int y, int r) : Fl_Toggle_Button(x-r,y-r,2*r,2*r){
     radius = r;
     color = INITCOLOR;
-    box(FL_CIRCLE_BOX);
+    box(FL_OVAL_BOX);
     Fl_Toggle_Button::color(color);
 }
 
@@ -64,10 +64,28 @@ void Ground::update(std::vector<Particle*> parts){
 
 /*---------------------MAIN WINDOW---------------- */
 
-Main_Window::Main_Window() : Fl_Window(SCREENSIZEX, SCREENSIZEY, "Task2"){
+Main_Window::Main_Window(int seed, int lights, int heavys) : Fl_Window(SCREENSIZEX, SCREENSIZEY, "Task2"){
     system = new System();
     ground = new Ground(0, 0, GROUNDWIDTH, GROUNDHEIGHT, system);
 
+    for(int i = 0; i < lights; ++i){
+        Light * l;
+        do{
+            std::cout << "LIGHT seed = " << seed << std::endl;
+            l = new Light(seed);
+        }while(is_colliding(l));
+        add(l);
+    }
+
+    for(int i = 0; i < heavys; ++i){
+        Heavy * h;
+        do{
+            std::cout << "HEAVY seed = " << seed << std::endl;
+            h = new Heavy(seed);
+        }while(is_colliding(h));
+        add(h);
+    }
+    
     stepButton = new Fl_Button(GROUNDWIDTH, 40, SCREENSIZEX-GROUNDWIDTH, 30, "Do Steps");
     stepButton->callback(step_callback, (void*)this);
 
@@ -167,7 +185,8 @@ void Main_Window::add_light_callback(Fl_Widget* w, void* v) {
     do{
         std::random_device rd;
         std::mt19937 gen(rd());
-        newparticle = new Light(gen());
+        int seed = gen();
+        newparticle = new Light(seed);
         std::cout << newparticle->get_x() << "," << newparticle->get_y() << std::endl;
     }while(window->is_colliding(newparticle));
 
@@ -181,7 +200,8 @@ void Main_Window::add_heavy_callback(Fl_Widget* w, void* v) {
     do{
         std::random_device rd;
         std::mt19937 gen(rd());
-        newparticle = new Heavy(gen());
+        int seed = gen();
+        newparticle = new Heavy(seed);
         std::cout << newparticle->get_x() << "," << newparticle->get_y() << std::endl;
     }while(window->is_colliding(newparticle));
     window->add(newparticle);

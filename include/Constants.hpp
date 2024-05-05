@@ -10,5 +10,5 @@ const int MAXVELOCITY = 100;
 const int FPS = MAXVELOCITY*2;
 const double TICKTIME = 1.0/FPS;
 const int SCALE = 20;
-const int INITCOLOR = 80;
+const int INITCOLOR = 72;
 #endif

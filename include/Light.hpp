@@ -5,16 +5,16 @@
 
 class Light : public Particle{
     static double radius;
-    static double mass;
+    static int mass;
 public:
-    Light(int seed);
+    Light(int& seed);
 
     Light(double x, double y, double vx, double vy);
     
     double get_radius() const {
         return radius;
     }
-    double get_mass() const {
+    int get_mass() const {
         return mass;
     }
 
@@ -22,7 +22,7 @@ public:
     void move(double time);
 
     void update(int mode, Particle* partner = nullptr);
-
+    
 };
 
 

@@ -23,7 +23,7 @@
 
         /* pure virtual params */
         virtual double get_radius() const = 0;
-        virtual double get_mass() const = 0;
+        virtual int get_mass() const = 0;
 
         double get_distance_to(const Particle* other) const;
 
@@ -40,11 +40,13 @@
         bool out_of_boundX(int w) const;
         bool out_of_boundY(int h) const;
 
-        /* mode: 
+        /* mode:
             0 = free
             1 = x_border
             2 = y_border
             3 = particle  */
         virtual void update(int mode, Particle* partner = nullptr) = 0;
+
+        virtual ~Particle(){}
     };
 #endif

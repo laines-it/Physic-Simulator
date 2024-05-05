@@ -4,12 +4,12 @@
 #include <cmath>
 #include <random>
 
-Heavy::Heavy(int seed){
+Heavy::Heavy(int& seed){
     std::cout << "by seed" << std::endl;
     std::mt19937 gen(seed);
     std::uniform_int_distribution<int> RandRaidus(10, 50);
     radius = RandRaidus(gen);
-    std::uniform_real_distribution<double> RandMass(1.0, 20);
+    std::uniform_int_distribution<int> RandMass(10, 80);
     std::uniform_int_distribution<int> RandX(radius, GROUNDWIDTH - radius);
     std::uniform_int_distribution<int> RandY(radius, GROUNDHEIGHT - radius);
     std::uniform_real_distribution<double> RandVX(-MAXVELOCITY, MAXVELOCITY);
@@ -19,6 +19,7 @@ Heavy::Heavy(int seed){
     velocity_x = RandVX(gen);
     velocity_y = RandVY(gen);
     mass = RandMass(gen);
+    seed = gen(); //seed changes after initialization
 }
 
 Heavy::Heavy(double x, double y, double vx, double vy):Particle(x, y, vx, vy) {

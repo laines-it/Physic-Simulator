@@ -18,7 +18,10 @@ double global_time;
 Main_Window *window;
 
 int main(int argc, char **argv) {
-  window = new Main_Window();
+  int seed = atoi(argv[1]);
+  int lights = atoi(argv[2]);
+  int heavys = atoi(argv[3]);
+  window = new Main_Window(seed, lights, heavys);
   window->show(argc, argv);
   Fl::run();
   return 0;
