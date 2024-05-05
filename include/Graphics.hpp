@@ -26,6 +26,7 @@ public:
 
   int getColor() const { return color; }
   int getId() const { return id; }
+  void decreaseId(int shift) { id -= shift; } //when removing
 
   //reposition 
   void move(int new_x, int new_y);
@@ -39,9 +40,13 @@ class Ground : public Fl_Group {
 public:
   Ground(int x, int y, int w, int h, System *system);
 
+  bool is_empty() const { return particles.empty(); }
+
   void create_particles(std::vector<Particle*> parts);
 
   void add_particle(Particle* p);
+
+  std::vector<int> remove_selected();
 
   void update(std::vector<Particle*> parts);
 
@@ -72,8 +77,6 @@ public:
   static void remove_callback(Fl_Widget* w, void* v);
   static void add_light_callback(Fl_Widget* w, void* v);
   static void add_heavy_callback(Fl_Widget* w, void* v);
-  
-  void removeParticle();
 
   void add(Particle* p);
 

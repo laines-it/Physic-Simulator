@@ -42,7 +42,6 @@ Ground::Ground(int x, int y, int w, int h, System *sys) : Fl_Group(x,y,w,h){
 void Ground::create_particles(std::vector<Particle*> parts){
     particles.reserve(parts.size());
     for(Particle * p : parts)
-        //particles.push_back(new ParticleImage(p));
         add_particle(p);
 }
 
@@ -53,11 +52,24 @@ void Ground::add_particle(Particle* p){
     redraw();
 }
 
+std::vector<int> Ground::remove_selected(){
+    std::vector<int> ids;
+    for(int i = (int)particles.size()-1; i >= 0; --i){
+        if(particles[i]->value()){
+            std::cout << "removing particle " << i << "\n";
+            ids.push_back(i);
+            remove(particles[i]);
+            delete particles[i];
+            particles.erase(particles.begin()+i);
+        }
+    }
+    redraw();
+    return ids;
+}
+
 void Ground::update(std::vector<Particle*> parts){ 
     for(int i = 0; i < (int)particles.size(); ++i){
-        if(!particles[i]->value()){
-            particles[i]->move(parts[i]->get_x(), parts[i]->get_y());
-        }
+        particles[i]->move(parts[i]->get_x(), parts[i]->get_y());
     }
     redraw();
 }
@@ -66,12 +78,20 @@ void Ground::update(std::vector<Particle*> parts){
 
 Main_Window::Main_Window(int seed, int lights, int heavys) : Fl_Window(SCREENSIZEX, SCREENSIZEY, "Task2"){
     system = new System();
-    ground = new Ground(0, 0, GROUNDWIDTH, GROUNDHEIGHT, system);
 
+    addButton = new Fl_Button(GROUNDWIDTH, 0, SCREENSIZEX-GROUNDWIDTH, BUTTONHEIGHT, "Add Particle");
+    addButton->callback(add_callback, (void*)this);
+
+    stepButton = new Fl_Button(GROUNDWIDTH, BUTTONHEIGHT + BUTTONMARGIN, SCREENSIZEX-GROUNDWIDTH, BUTTONHEIGHT, "Do Steps");
+    stepButton->callback(step_callback, (void*)this);
+
+    removeButton = new Fl_Button(GROUNDWIDTH,2*(BUTTONHEIGHT+BUTTONMARGIN), SCREENSIZEX-GROUNDWIDTH, BUTTONHEIGHT, "Remove Particles");
+    removeButton->callback(remove_callback, (void*)this);
+
+    ground = new Ground(0, 0, GROUNDWIDTH, GROUNDHEIGHT, system);
     for(int i = 0; i < lights; ++i){
         Light * l;
         do{
-            std::cout << "LIGHT seed = " << seed << std::endl;
             l = new Light(seed);
         }while(is_colliding(l));
         add(l);
@@ -80,17 +100,10 @@ Main_Window::Main_Window(int seed, int lights, int heavys) : Fl_Window(SCREENSIZ
     for(int i = 0; i < heavys; ++i){
         Heavy * h;
         do{
-            std::cout << "HEAVY seed = " << seed << std::endl;
             h = new Heavy(seed);
         }while(is_colliding(h));
         add(h);
     }
-    
-    stepButton = new Fl_Button(GROUNDWIDTH, 40, SCREENSIZEX-GROUNDWIDTH, 30, "Do Steps");
-    stepButton->callback(step_callback, (void*)this);
-
-    addButton = new Fl_Button(GROUNDWIDTH, 0, SCREENSIZEX-GROUNDWIDTH, 30, "Add Particle");
-    addButton->callback(add_callback, (void*)this);
 }
 
 void Main_Window::simulate(double time){
@@ -106,9 +119,11 @@ void Main_Window::step_callback(Fl_Widget* w, void* v) {
     Main_Window* win = (Main_Window*) v;
     win->stepButton->deactivate();
     win->addButton->deactivate();
-    win->stepButton->hide();
+    win->stepButton->copy_label("simulating steps...");
     win->addButton->hide();
-    win->set_step_time(120);
+    win->removeButton->deactivate();
+    win->removeButton->hide();
+    win->set_step_time(10);
     win->until_collision();
 }
 
@@ -126,7 +141,8 @@ void Main_Window::until_collision(){
     }
     pair_to_update = system->nextCollision(&time);
     std::cout << "SIMULATING " << time << " for " << pair_to_update.first << "," << pair_to_update.second << std::endl;
-    if((step_time -= time) > 0)
+    step_time -= time;
+    if(step_time > 0)
         remaining_time = time;
     else
         remaining_time = step_time + time;
@@ -144,12 +160,24 @@ void Main_Window::sim_tick(void * w){
         win->remaining_time -= TICKTIME;
         Fl::repeat_timeout(TICKTIME, sim_tick, win);
     }else{
-        win->system->update(win->pair_to_update);
-        win->until_collision();
+        if(win->step_time > 0){
+            win->system->update(win->pair_to_update);
+            win->until_collision();
+        }else{
+            win->stepButton->activate();
+            win->stepButton->copy_label("Do Steps");
+            win->addButton->activate();
+            win->stepButton->show();
+            win->addButton->show();
+            win->removeButton->activate();
+            win->removeButton->show();
+        }
     }
 }
 
 void Main_Window::add(Particle* p){
+    stepButton->activate();
+    stepButton->copy_label("Do Steps");
     ground->add_particle(p);
     system->add(p);
 }
@@ -205,4 +233,19 @@ void Main_Window::add_heavy_callback(Fl_Widget* w, void* v) {
         std::cout << newparticle->get_x() << "," << newparticle->get_y() << std::endl;
     }while(window->is_colliding(newparticle));
     window->add(newparticle);
+}
+
+void Main_Window::remove_callback(Fl_Widget* w, void* v) {
+    Main_Window* window = (Main_Window*)v;
+    std::vector<int> to_remove = window->ground->remove_selected();
+    if(to_remove.empty())
+        std::cout << "Select particles to remove!" << std::endl;
+    else
+        for(int id : to_remove)
+            window->system->remove(id);
+
+    if(window->ground->is_empty()){
+        window->stepButton->deactivate();
+        window->stepButton->copy_label("(no particles)");
+    }
 }

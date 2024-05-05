@@ -17,6 +17,11 @@ int System::add(Particle* p){
     return particles.size();
 }
 
+void System::remove(int id){
+    delete particles[id];
+    particles.erase(particles.begin() + id);
+}
+
 std::pair<int,int> System::nextCollision(double * p_time){
     if(!particles.empty()){
         std::cout << "There are " << particles.size() << " particles\n";

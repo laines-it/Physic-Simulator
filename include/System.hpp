@@ -13,34 +13,36 @@
 #include <pthread.h>
 #include "Constants.hpp"
 
-    class System{
-        std::vector<Particle*> particles;
-        double time_end;
-        int w, h; //Field parameters
-    public:
+class System{
+    std::vector<Particle*> particles;
+    double time_end;
+    int w, h; //Field parameters
+public:
 
-        System();
-        int add(Particle* p);
+    System();
 
-        /*  Calculates time of next collision
-            in whole system (including borders) and
-            reserve it in *p_time
-            Returns ids of colliding particles */
-        std::pair<int,int> nextCollision(double * p_time);
+    int add(Particle* p);
+    void remove(int id);
 
-        std::vector<Particle*> get_particles(){ return particles; }
+    /*  Calculates time of next collision
+        in whole system (including borders) and
+        reserve it in *p_time
+        Returns ids of colliding particles */
+    std::pair<int,int> nextCollision(double * p_time);
 
-        void update(Particle* p, int id);
-        void update(std::pair<int,int> ids);
+    std::vector<Particle*> get_particles(){ return particles; }
 
-        /* moves all particles */
-        void move(double time);
+    void update(Particle* p, int id);
+    void update(std::pair<int,int> ids);
 
-        ~System(){
-            for(int i = 0; i < particles.size(); i++){
-                delete particles[i];
-            }
+    /* moves all particles */
+    void move(double time);
+
+    ~System(){
+        for(int i = 0; i < particles.size(); i++){
+            delete particles[i];
         }
-    };
+    }
+};
 
 #endif
