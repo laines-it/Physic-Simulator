@@ -82,13 +82,13 @@ Main_Window::Main_Window(int seed, int lights, int heavys) : Fl_Window(SCREENSIZ
     addButton = new Fl_Button(GROUNDWIDTH, 0, SCREENSIZEX-GROUNDWIDTH, BUTTONHEIGHT, "Add Particle");
     addButton->callback(add_callback, (void*)this);
 
-    stepInput = new Fl_Int_Input(50, 10, 100, 30, "steps ");
+    stepInput = new Fl_Int_Input(GROUNDWIDTH, BUTTONHEIGHT + BUTTONMARGIN, SCREENSIZEX-GROUNDWIDTH, BUTTONHEIGHT, "steps ");
     stepInput->value("1");
 
-    stepButton = new Fl_Button(GROUNDWIDTH, BUTTONHEIGHT + BUTTONMARGIN, SCREENSIZEX-GROUNDWIDTH, BUTTONHEIGHT, "Do Steps");
+    stepButton = new Fl_Button(GROUNDWIDTH, 2*(BUTTONHEIGHT + BUTTONMARGIN), SCREENSIZEX-GROUNDWIDTH, BUTTONHEIGHT, "Do Steps");
     stepButton->callback(step_callback, (void*)this);
 
-    removeButton = new Fl_Button(GROUNDWIDTH,2*(BUTTONHEIGHT+BUTTONMARGIN), SCREENSIZEX-GROUNDWIDTH, BUTTONHEIGHT, "Remove Particles");
+    removeButton = new Fl_Button(GROUNDWIDTH,3*(BUTTONHEIGHT+BUTTONMARGIN), SCREENSIZEX-GROUNDWIDTH, BUTTONHEIGHT, "Remove Particles");
     removeButton->callback(remove_callback, (void*)this);
 
     ground = new Ground(0, 0, GROUNDWIDTH, GROUNDHEIGHT, system);
@@ -126,7 +126,9 @@ void Main_Window::step_callback(Fl_Widget* w, void* v) {
     win->addButton->hide();
     win->removeButton->deactivate();
     win->removeButton->hide();
-    win->set_step_time(10);
+    win->stepInput->deactivate();
+    win->stepInput->hide();
+    win->set_step_time(atoi(win->stepInput->value()));
     win->until_collision();
 }
 
@@ -174,12 +176,15 @@ void Main_Window::sim_tick(void * w){
             win->addButton->show();
             win->removeButton->activate();
             win->removeButton->show();
+            win->stepInput->activate();
+            win->stepInput->show();
         }
     }
 }
 
 void Main_Window::add(Particle* p){
     stepButton->activate();
+    stepInput->activate();
     stepButton->copy_label("Do Steps");
     ground->add_particle(p);
     system->add(p);
@@ -249,6 +254,7 @@ void Main_Window::remove_callback(Fl_Widget* w, void* v) {
 
     if(window->ground->is_empty()){
         window->stepButton->deactivate();
+        window->stepInput->deactivate();
         window->stepButton->copy_label("(no particles)");
     }
 }
