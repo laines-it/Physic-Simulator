@@ -51,6 +51,11 @@ public:
 
   void update(std::vector<Particle*> parts);
 
+  ~Ground(){
+    for(auto p : particles)
+      delete p;
+    delete group;
+  }
 };
 
 class Main_Window : public Fl_Window {
@@ -90,6 +95,10 @@ public:
   ~Main_Window(){
     delete ground;
     delete system;
+    delete stepButton;
+    delete addButton;
+    delete removeButton;
+    delete stepInput;
   }
 };
 

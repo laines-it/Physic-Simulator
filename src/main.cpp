@@ -12,17 +12,17 @@
 #include <unistd.h>
 #include <wait.h>
 
-pthread_t thread;
-double global_time;
-
-Main_Window *window;
-
 int main(int argc, char **argv) {
-  int seed = atoi(argv[1]);
-  int lights = atoi(argv[2]);
-  int heavys = atoi(argv[3]);
-  window = new Main_Window(seed, lights, heavys);
-  window->show(argc, argv);
-  Fl::run();
+  if(argc < 4) {
+    std::cout << "Usage: " << argv[0] << " <seed> <number of lights> <number of heavys>" << std::endl;
+  }else{
+    int seed = atoi(argv[1]);
+    int lights = atoi(argv[2]);
+    int heavys = atoi(argv[3]);
+    Main_Window * window = new Main_Window(seed, lights, heavys);
+    window->show(argc, argv);
+    Fl::run();
+    delete window;
+  }
   return 0;
 }

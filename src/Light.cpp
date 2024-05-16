@@ -28,7 +28,6 @@ void Light::move(double time) {
 }
 
 void Light::update(int mode, Particle* partner){
-    std::cout << "mode is " << mode << "\n";
     switch (mode){
         case 1:
             //x_border
@@ -41,7 +40,6 @@ void Light::update(int mode, Particle* partner){
         default:
             //other particle
             if(partner != nullptr){
-                std::cout << "other particle" << std::endl;
                 double dx = partner->get_x() - x;
                 double dy = partner->get_y() - y;
                 double distance = sqrt(dx*dx + dy*dy);
@@ -68,10 +66,8 @@ void Light::update(int mode, Particle* partner){
 
                 set_velocity_x(v1x_final);
                 set_velocity_y(v1y_final);
-                std::cout << "v1: " << v1x_final << "," << v1y_final << std::endl;
                 partner->set_velocity_x(v2x_final);
                 partner->set_velocity_y(v2y_final);
-                std::cout << "v2: " << v2x_final << "," << v2y_final << std::endl;
             }  
             break;
     }

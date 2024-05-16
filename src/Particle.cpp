@@ -60,19 +60,13 @@ double Particle::collide_time(const Particle* p) const {
     double dY = get_y() - p->get_y();
     double A = get_velocity_x() - p->get_velocity_x();
     double B = get_velocity_y() - p->get_velocity_y();
-    // std::cout << "A " << A << " B " << B << "\n";
-    // std::cout << "X " << dX << " Y " << dY << "\n";
-
-    double D = get_radius() + p->get_radius();
-    // std::cout << "D " << D << "\n";
+    double D = get_radius() + p->get_radius() + 0.01; //with amortization factor
 
     double discriminant = (D*D*(A*A+B*B) - (B*dX-A*dY)*(B*dX-A*dY));
     
-    // std::cout << "discriminant " << discriminant << "\n";
     if(discriminant > 0){
         //there is a solution
         double t = (-(dX*A + dY*B) - sqrt(discriminant));
-        std::cout << "t " << t << "\n";
         /*  0 solution can be, for example,
                 if 2 particles collided independently
                 at the same time */

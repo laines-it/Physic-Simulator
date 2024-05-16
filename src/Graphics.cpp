@@ -14,7 +14,6 @@ ParticleImage::ParticleImage(Particle* p, int id) : Fl_Toggle_Button(p->get_x()-
     this->id = id;
     radius = p->get_radius();
     color = INITCOLOR - p->get_mass()/10;
-    std::cout << "created particle in " << x()+radius  << "," << y()+radius << " and rad " << radius << " and mass " << p->get_mass() << "\n";
     box(FL_OVAL_BOX);
     Fl_Toggle_Button::color(color);
 };
@@ -34,7 +33,6 @@ void ParticleImage::move(int new_x, int new_y){
 
 Ground::Ground(int x, int y, int w, int h, System *sys) : Fl_Group(x,y,w,h){
     system = sys;
-    std::cout << "created ground\n";
     fl_color(Fl_Color(FL_WHITE));
     box(FL_DOWN_BOX);
 }
@@ -56,7 +54,6 @@ std::vector<int> Ground::remove_selected(){
     std::vector<int> ids;
     for(int i = (int)particles.size()-1; i >= 0; --i){
         if(particles[i]->value()){
-            std::cout << "removing particle " << i << "\n";
             ids.push_back(i);
             remove(particles[i]);
             delete particles[i];
@@ -133,10 +130,6 @@ void Main_Window::step_callback(Fl_Widget* w, void* v) {
 }
 
 void Main_Window::until_collision(){
-    std::cout << "------------------until collision---------------------" << std::endl;
-    for(Particle* p : system->get_particles()){
-        std::cout << "particle " << p->get_x() << "," << p->get_y() << std::endl;
-    }
     double time;
     for(Particle* p : system->get_particles()){
         if(p->out_of_boundX(GROUNDWIDTH))
@@ -145,14 +138,11 @@ void Main_Window::until_collision(){
             system->update(p,-2);
     }
     pair_to_update = system->nextCollision(&time);
-    std::cout << "SIMULATING " << time << " for " << pair_to_update.first << "," << pair_to_update.second << std::endl;
     step_time -= time;
     if(step_time > 0)
         remaining_time = time;
     else
         remaining_time = step_time + time;
-    std::cout << "remaining time: " << remaining_time << std::endl; 
-    std::cout << "step time: " << step_time << std::endl;
     sim_tick(this);
 }
 
@@ -201,6 +191,9 @@ void Main_Window::add_callback(Fl_Widget* butt, void* s) {
 
     add_dialog->show();
     Fl::run();
+    // delete add_dialog;
+    // delete light;
+    // delete heavy;
 }
 
 bool Main_Window::is_colliding(const Particle* p) const{
@@ -208,7 +201,6 @@ bool Main_Window::is_colliding(const Particle* p) const{
         double dist = p->get_distance_to(part);
         double sumrad = part->get_radius() + p->get_radius();
         if(sumrad > dist){
-            std::cout << "collided with " << part->get_x() << "," << part->get_y() << std::endl;
             return true;
         }
     }
@@ -223,7 +215,6 @@ void Main_Window::add_light_callback(Fl_Widget* w, void* v) {
         std::mt19937 gen(rd());
         int seed = gen();
         newparticle = new Light(seed);
-        std::cout << newparticle->get_x() << "," << newparticle->get_y() << std::endl;
     }while(window->is_colliding(newparticle));
 
     window->add(newparticle);
@@ -238,7 +229,6 @@ void Main_Window::add_heavy_callback(Fl_Widget* w, void* v) {
         std::mt19937 gen(rd());
         int seed = gen();
         newparticle = new Heavy(seed);
-        std::cout << newparticle->get_x() << "," << newparticle->get_y() << std::endl;
     }while(window->is_colliding(newparticle));
     window->add(newparticle);
 }

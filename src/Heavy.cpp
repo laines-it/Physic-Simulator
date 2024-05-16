@@ -5,7 +5,6 @@
 #include <random>
 
 Heavy::Heavy(int& seed){
-    std::cout << "by seed" << std::endl;
     std::mt19937 gen(seed);
     std::uniform_int_distribution<int> RandRaidus(10, 50);
     radius = RandRaidus(gen);
@@ -23,7 +22,6 @@ Heavy::Heavy(int& seed){
 }
 
 Heavy::Heavy(double x, double y, double vx, double vy):Particle(x, y, vx, vy) {
-    std::cout << "by x,y,vx,vy" << std::endl;
     std::mt19937 gen(1000);
     std::uniform_int_distribution<int> RandRaidus(10, 50);
     radius = RandRaidus(gen);
@@ -37,7 +35,6 @@ void Heavy::move(double time) {
 }
 
 void Heavy::update(int mode, Particle* partner){
-    std::cout << "mode is " << mode << "\n";
     switch (mode){
         case 1:
             //x_border
@@ -49,18 +46,6 @@ void Heavy::update(int mode, Particle* partner){
             break;
         default:
             //other particle
-            if(partner != nullptr){
-                std::cout << "other particle" << std::endl;
-            }
-            // int r = get_radius() + partner->get_radius();
-            // int dx = abs(x - partner->get_x());
-            // int dy = abs(y - partner->get_y());
-            // double sinus = dx/r;
-            // double cosinus = dy/r;
-            // //x axis connects centers
-            // double velocity_projected_x = -(velocity_x / cosinus + velocity_y / sinus);
-            // double velocity_projected_y =   velocity_x / sinus + velocity_y / cosinus;
-
             double dx = partner->get_x() - x;
             double dy = partner->get_y() - y;
             double distance = sqrt(dx*dx + dy*dy);
@@ -87,11 +72,8 @@ void Heavy::update(int mode, Particle* partner){
 
             set_velocity_x(v1x_final);
             set_velocity_y(v1y_final);
-            std::cout << "v1: " << v1x_final << "," << v1y_final << std::endl;
             partner->set_velocity_x(v2x_final);
             partner->set_velocity_y(v2y_final);
-            std::cout << "v2: " << v2x_final << "," << v2y_final << std::endl;
-            //help
             break;
     }
 }
